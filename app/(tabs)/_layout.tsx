@@ -12,11 +12,11 @@ export default function TabsLayout() {
       />
       <Tabs.Screen
         name="sandbox"
-        options={{ title: "Пісочниця" }}
+        options={{ title: "Панченко - ісочниця" }}
       />
       <Tabs.Screen
         name="profile"
-        options={{ title: "Профіль" }}
+        options={{ title: "Панченко - профіль" }}
       />
     </Tabs>
   );

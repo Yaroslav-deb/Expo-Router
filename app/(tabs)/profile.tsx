@@ -4,6 +4,31 @@ import { useIsFocused } from '@react-navigation/native';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, withDelay } from 'react-native-reanimated';
 import { globalStyles } from '../../styles/global';
 
+import { File, Paths } from 'expo-file-system/next';
+
+const profileFile = new File(Paths.document, 'user_profile.json');
+
+async function loadProfileData() {
+  if (!profileFile.exists) return null;
+  try {
+    const content = await profileFile.text();
+    return JSON.parse(content);
+  } catch (e) {
+    await profileFile.delete();
+    return null;
+  }
+}
+
+async function saveProfileData(name: string, lastName: string) {
+  await profileFile.write(JSON.stringify({ name, lastName }));
+}
+
+async function deleteProfileData() {
+  if (profileFile.exists) {
+    await profileFile.delete();
+  }
+}
+
 const AnimatedFields = () => {
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -12,11 +37,9 @@ const AnimatedFields = () => {
 
   const inputOpacity_1 = useSharedValue(0);
   const inputTranslateY_1 = useSharedValue(20);
-
   const inputOpacity_2 = useSharedValue(0);
   const inputTranslateY_2 = useSharedValue(20);
 
-  // Стилі анімації
   const animatedFieldsStyle_1 = useAnimatedStyle(() => ({
     opacity: inputOpacity_1.value,
     transform: [{ translateY: inputTranslateY_1.value }],
@@ -27,30 +50,39 @@ const AnimatedFields = () => {
     transform: [{ translateY: inputTranslateY_2.value }],
   }));
 
-  // Тригер анімації
   useEffect(() => {
     if (!isFocused) return;
 
-    // 1. Скидаємо значення
+    const initInputs = async () => {
+      const data = await loadProfileData();
+      if (data) {
+        setName(data.name || '');
+        setLastName(data.lastName || '');
+      }
+    };
+    initInputs();
+
     inputOpacity_1.value = 0;
     inputTranslateY_1.value = 20;
     inputOpacity_2.value = 0;
     inputTranslateY_2.value = 20;
 
-    // 2. Запускаємо каскадну анімацію
     inputOpacity_1.value = withDelay(200, withTiming(1, { duration: 500 }));
     inputTranslateY_1.value = withDelay(200, withTiming(0, { duration: 500 }));
-
     inputOpacity_2.value = withDelay(400, withTiming(1, { duration: 500 }));
     inputTranslateY_2.value = withDelay(400, withTiming(0, { duration: 500 }));
   }, [isFocused, inputOpacity_1, inputTranslateY_1, inputOpacity_2, inputTranslateY_2]);
-  const handleSave = () => {
-    Alert.alert('Інформація', `Користувач: ${name}\nСтатус: ${lastName}`);
+
+  const handleSave = async () => {
+    await saveProfileData(name, lastName);
+    Alert.alert('Успіх', 'Ваші дані надійно збережено!');
   };
 
-  const handleClear = () => {
+  const handleClear = async () => {
+    await deleteProfileData();
     setName('');
     setLastName('');
+    Alert.alert('Очищено', 'Ваші дані видалено з пам\'яті.');
   };
 
   return (

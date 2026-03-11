@@ -12,8 +12,8 @@ export default function TabsLayout() {
         options={{ title: "Головна" }} 
       />
       <Tabs.Screen
-        name="sandbox"
-        options={{ title: "Панченко - Пісочниця" }}
+        name="network"
+        options={{ title: "Панченко - Мережа" }}
       />
       <Tabs.Screen
         name="profile"

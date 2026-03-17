@@ -1,7 +1,12 @@
-import axios from 'axios';
+import axios from "axios";
 
 const apiUsers = axios.create({
-  baseURL: 'https://jsonplaceholder.typicode.com/users'
+  baseURL: "https://jsonplaceholder.typicode.com/users",
 });
 
-export { apiUsers };
+const apiWeather = axios.create({
+  baseURL: "https://api.openweathermap.org/data/2.5",
+});
+
+export { apiUsers, apiWeather };
+

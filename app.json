@@ -39,8 +39,21 @@
           }
         }
       ],
-      "expo-sqlite"
+      "expo-sqlite",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Потрібен доступ до камери"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Потрібен доступ до галереї"
+        }
+      ]
     ],
+
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
